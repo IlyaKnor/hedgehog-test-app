@@ -19,29 +19,53 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @Operation(summary = "Поиск пользователя по id")
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Profile> findById(@PathVariable(name = "id") long id) {
-        return ResponseEntity.ok(profileService.findById(id));
+    @Operation(
+            summary = "Проверка наличия пользователя",
+            description = "API принимает в себя имя пользователя и отдает ответ, " +
+                    "содержащий информацию есть пользователь, или нет в базе"
+    )
+    @GetMapping(value = "/{name}")
+    public ResponseEntity<Profile> findByName(@PathVariable(name = "name") String name) {
+        return ResponseEntity.ok(profileService.findByName(name));
     }
 
-    @Operation(summary = "Поиск пользователя по фрагменту")
+    @Operation(
+            summary = "Поиск пользователя по фрагменту",
+            description = "API принимает в себя часть имени пользователя и выводит всех пользователей," +
+                    " которые могут подходить"
+    )
     @GetMapping(value = "/segment/{segment}")
     public ResponseEntity<List<Profile>> findByNameSegment(@PathVariable(name = "segment") String segment) {
         return ResponseEntity.ok(profileService.findByNameSegment(segment));
     }
 
-    @Operation(summary = "Создание пользователя")
+    @Operation(
+            summary = "Добавление пользователя",
+            description = "API принимает в себя данные “Имя/Фамилия”, записывает это в базу данных"
+    )
     @PostMapping()
     public ResponseEntity<Profile> create(@RequestBody CreateProfileRequest profile) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(profileService.create(profile));
     }
 
-    @Operation(summary = "Удаление пользователя")
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(name = "id") long id) {
-        profileService.delete(id);
+    @Operation(
+            summary = "Удаление пользователя по id",
+            description = "API принимает в себя id пользователя и удаляет его из базы данных"
+    )
+    @DeleteMapping(value = "/by-id/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable(name = "id") long id) {
+        profileService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Удаление пользователя по имени",
+            description = "API принимает в себя имя пользователя и удаляет его из базы данных"
+    )
+    @DeleteMapping(value = "/by-name/{name}")
+    public ResponseEntity<Void> deleteByName(@PathVariable(name = "name")String name) {
+        profileService.deleteByName(name);
         return ResponseEntity.noContent().build();
     }
 }

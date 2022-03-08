@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -17,13 +16,13 @@ public class ProfileService {
     private final ProfileMapper profileMapper;
     private final ProfileRequestConverter profileRequestConverter;
 
-    public Profile findById(long id) {
-        return profileMapper.select(id);
+    public Profile findByName(String name) {
+        return profileMapper.selectByName(name.toLowerCase());
     }
 
     public List<Profile> findByNameSegment(String segment) {
         return profileMapper.selectByNameSegment(
-                "%" + segment.toLowerCase(Locale.ROOT) + "%"
+                "%" + segment.toLowerCase() + "%"
         );
     }
 
@@ -33,7 +32,11 @@ public class ProfileService {
         return created;
     }
 
-    public void delete(long id) {
-        profileMapper.delete(id);
+    public void deleteById(long id) {
+        profileMapper.deleteById(id);
+    }
+
+    public void deleteByName(String name) {
+        profileMapper.deleteByName(name.toLowerCase());
     }
 }
